@@ -21,3 +21,11 @@ export type Goal = {
   currentAmount: number;
   targetDate: Date;
 };
+
+
+export type Account = {
+  id: string;
+  name: string;
+  type: 'Checking' | 'Savings' | 'Credit Card' | 'Investment' | 'Other';
+  balance: number;
+};

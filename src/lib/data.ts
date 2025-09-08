@@ -1,4 +1,4 @@
-import type { Transaction, Budget, Goal } from './types';
+import type { Transaction, Budget, Goal, Account } from './types';
 
 export const mockTransactions: Transaction[] = [
   { id: '1', date: new Date('2024-07-20'), description: 'Monthly Salary', amount: 5000, type: 'income', category: 'Salary' },
@@ -18,4 +18,11 @@ export const mockBudgets: Budget[] = [
 export const mockGoals: Goal[] = [
   { id: '1', name: 'Vacation to Hawaii', targetAmount: 4000, currentAmount: 1500, targetDate: new Date('2025-06-01') },
   { id: '2', name: 'New Laptop', targetAmount: 1800, currentAmount: 1750, targetDate: new Date('2024-08-15') },
+];
+
+export const mockAccounts: Account[] = [
+  { id: '1', name: 'Chase Checking', type: 'Checking', balance: 5420.50 },
+  { id: '2', name: 'Ally High-Yield Savings', type: 'Savings', balance: 15300.00 },
+  { id: '3', name: 'Chase Sapphire Reserve', type: 'Credit Card', balance: -750.25 },
+  { id: '4', name: 'Vanguard Brokerage', type: 'Investment', balance: 25000.00 },
 ];

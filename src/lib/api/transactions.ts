@@ -1,5 +1,5 @@
 import type { Transaction } from "@/lib/types";
-import type { TransactionFormValues } from "@/components/add-transaction-dialog";
+import type { TransactionFormValues } from "@/components/add-account-dialog";
 
 const API_BASE_URL = "http://localhost:8000/api";
 
