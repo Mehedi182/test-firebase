@@ -30,10 +30,10 @@ import {
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
+import { addAccount } from "@/lib/api/accounts";
 const accountFormSchema = z.object({
   name: z.string().min(1, "Account name is required."),
-  type: z.enum(["Checking", "Savings", "Credit Card", "Investment", "Other"]),
+  type: z.enum(["checking", "savings", "credit card", "investment", "other"]),
   balance: z.coerce.number().default(0),
 });
 
@@ -61,16 +61,24 @@ export default function AddAccountDialog({
     // In a real app, you would call an API to save the account.
     console.log(data);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    toast({
-      title: "Account Added",
-      description: "Your new account has been saved successfully.",
-    });
-    form.reset();
-    onOpenChange(false);
-    // You would typically refresh the accounts list here.
+    try {
+      const newAccount = await addAccount(data);
+      console.log("Account added:", newAccount);
+      toast({
+        title: "Account Added",
+        description: "Your new account has been saved successfully.",
+      });
+      form.reset();
+      onOpenChange(false);
+      // You would typically refresh the accounts list here.
+    } catch (error) {
+      console.error("Failed to add account:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add account. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -117,11 +125,11 @@ export default function AddAccountDialog({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="Checking">Checking</SelectItem>
-                        <SelectItem value="Savings">Savings</SelectItem>
-                        <SelectItem value="Credit Card">Credit Card</SelectItem>
-                        <SelectItem value="Investment">Investment</SelectItem>
-                        <SelectItem value="Other">Other</SelectItem>
+                        <SelectItem value="checking">Checking</SelectItem>
+                        <SelectItem value="savings">Savings</SelectItem>
+                        <SelectItem value="credit card">Credit Card</SelectItem>
+                        <SelectItem value="investment">Investment</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
