@@ -20,20 +20,11 @@ import { ArrowUpRight } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import type { Transaction } from "@/lib/types";
+import { getTransactions } from "@/lib/api/transactions";
 
 async function getRecentTransactions(): Promise<Transaction[]> {
-  const res = await fetch(`http://localhost:8000/api/transactions`, {
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    throw new Error("Failed to fetch transactions");
-  }
-  const data = await res.json();
-  const transactions = data.map((t: Transaction) => ({
-    ...t,
-    date: new Date(t.date),
-  }));
-  return transactions.slice(0, 5);
+  const allTransactions = await getTransactions();
+  return allTransactions.slice(0, 5);
 }
 
 export default async function RecentTransactions() {
@@ -93,7 +84,7 @@ export default async function RecentTransactions() {
                   </Badge>
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
-                  {transaction.date.toLocaleDateString()}
+                  {new Date(transaction.date).toLocaleDateString()}
                 </TableCell>
               </TableRow>
             ))}
