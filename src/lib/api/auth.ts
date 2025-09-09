@@ -43,3 +43,34 @@ export function logout(): void {
     Cookies.remove('access_token');
     Cookies.remove('refresh_token');
 }
+
+
+export async function refreshToken(): Promise<string | null> {
+    const refreshToken = Cookies.get('refresh_token');
+    if (!refreshToken) {
+        return null;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/token/refresh/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ refresh: refreshToken }),
+        });
+
+        if (!res.ok) {
+            throw new Error('Token refresh failed');
+        }
+
+        const data = await res.json();
+        const newAccessToken = data.access;
+        Cookies.set('access_token', newAccessToken, { expires: 1, secure: process.env.NODE_ENV === 'production' });
+        return newAccessToken;
+    } catch (error) {
+        console.error(error);
+        logout(); // Logout if refresh fails
+        return null;
+    }
+}
