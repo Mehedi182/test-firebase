@@ -1,19 +1,37 @@
 import type { Transaction } from "@/lib/types";
-import type { TransactionFormValues } from "@/components/add-account-dialog";
+import type { TransactionFormValues } from "@/components/add-transaction-dialog";
+import Cookies from "js-cookie";
 
 const API_BASE_URL = "http://localhost:8000/api";
 
+const getAuthHeaders = () => {
+    const token = Cookies.get('access_token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+};
+
 export async function getTransactions(): Promise<Transaction[]> {
-    // In a real app, you might fetch from an external API or a database.
+    const token = Cookies.get('access_token');
+    if (!token) {
+        console.error('No access token found.');
+        return [];
+    }
+
     try {
-        const res = await fetch(`${API_BASE_URL}/transactions`, { cache: 'no-store' });
+        const res = await fetch(`${API_BASE_URL}/transactions`, {
+            cache: 'no-store',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
         if (!res.ok) {
-            //   throw new Error('Failed to fetch transactions');
-            console.error('Failed to fetch transactions', res.statusText);
+            console.error('Failed to fetch transactions', res.status, res.statusText);
             return [];
         }
         const data = await res.json();
-        // The dates are strings over the network, so we need to convert them back to Date objects.
         return data.map((t: any) => ({ ...t, date: new Date(t.date) }));
     } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -25,9 +43,7 @@ export async function addTransaction(transaction: TransactionFormValues): Promis
     try {
         const res = await fetch(`${API_BASE_URL}/transactions/`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify({
                 ...transaction,
                 // Ensure date is in ISO format for the backend
