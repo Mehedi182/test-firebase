@@ -1,11 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { DollarSign, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
-import { getTotalBalance } from "@/lib/api/dashboard";
+import { getTotalBalance, getMonthlySummary } from "@/lib/api/dashboard";
 export default async function OverviewCards() {
     const totalBalance = await getTotalBalance().then(res => res.total_balance);
-    const totalIncome = 5000;
-    const totalExpenses = 231.45;
+    const { income: totalIncome, expense: totalExpenses } = await getMonthlySummary();
 
     return (
         <div className="grid gap-4 md:grid-cols-3">

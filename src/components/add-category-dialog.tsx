@@ -66,7 +66,7 @@ export default function AddCategoryDialog({
 
     try {
       const newCategory = await addCategory(data);
-      toast({
+      toast({   
         title: "Category Added",
         description: "Your new category has been saved successfully.",
       });

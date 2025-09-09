@@ -36,6 +36,13 @@ export type TotalBalance = {
   // expenses: float;
 };
 
+export type MonthlySummary = {
+  // month: string; // e.g., "2023-09"
+  income: number;
+  expense: number;
+  // balance: number;
+};
+
 export type Category = {
   id: string;
   name: string;
