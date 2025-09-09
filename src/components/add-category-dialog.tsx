@@ -32,6 +32,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { addCategory } from "@/lib/api/categories";
 
 const categoryFormSchema = z.object({
   name: z.string().min(1, "Category name is required."),
@@ -60,21 +61,27 @@ export default function AddCategoryDialog({
       is_active: true,
     },
   });
-
   const onSubmit = async (data: CategoryFormValues) => {
-    // In a real app, you would call an API to save the category.
     console.log(data);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    toast({
-      title: "Category Added",
-      description: "Your new category has been saved successfully.",
-    });
-    form.reset();
-    onOpenChange(false);
-    // You would typically refresh the categories list here.
+    try {
+      const newCategory = await addCategory(data);
+      toast({
+        title: "Category Added",
+        description: "Your new category has been saved successfully.",
+      });
+      form.reset();
+      onOpenChange(false);
+      // If using Next.js router, you can refresh here if needed:
+      // router.refresh();
+    } catch (error) {
+      console.error("Failed to add category:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add category. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

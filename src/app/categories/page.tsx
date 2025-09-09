@@ -1,18 +1,26 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { DataTable } from "@/components/categories/data-table";
 import { columns } from "@/components/categories/columns";
-import { mockCategories } from "@/lib/data";
+// import { mockCategories } from "@/lib/data";
 import AddCategoryDialog from "@/components/add-category-dialog";
 import AppSidebar from "@/components/layout/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { getCategories } from "@/lib/api/categories";
+
 export default function CategoriesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
-  // In a real app, you would fetch categories from an API
-  const categories = mockCategories;
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      const data = await getCategories();
+      setCategories(data);
+    }
+    fetchCategories();
+  }, []);
 
   return (
     <SidebarProvider>
