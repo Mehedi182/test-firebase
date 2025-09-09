@@ -29,3 +29,9 @@ export type Account = {
   type: 'checking' | 'savings' | 'credit card' | 'investment' | 'other';
   balance: number;
 };
+
+export type TotalBalance = {
+  total_balance: float;
+  // income: float;
+  // expenses: float;
+};

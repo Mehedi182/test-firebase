@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { DollarSign, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
-
-export default function OverviewCards() {
-    const totalBalance = 4768.55;
+import { getTotalBalance } from "@/lib/api/dashboard";
+export default async function OverviewCards() {
+    const totalBalance = await getTotalBalance().then(res => res.total_balance);
     const totalIncome = 5000;
     const totalExpenses = 231.45;
 

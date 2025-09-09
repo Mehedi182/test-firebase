@@ -36,6 +36,7 @@ const accountFormSchema = z.object({
   type: z.enum(["checking", "savings", "credit card", "investment", "other"]),
   balance: z.coerce.number().default(0),
 });
+import { useRouter } from "next/navigation";
 
 export type AccountFormValues = z.infer<typeof accountFormSchema>;
 
@@ -47,30 +48,29 @@ export default function AddAccountDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     defaultValues: {
       name: "",
-      type: "Checking",
+      type: "checking",
       balance: 0,
     },
   });
 
   const onSubmit = async (data: AccountFormValues) => {
-    // In a real app, you would call an API to save the account.
     console.log(data);
 
     try {
       const newAccount = await addAccount(data);
-      console.log("Account added:", newAccount);
       toast({
         title: "Account Added",
         description: "Your new account has been saved successfully.",
       });
       form.reset();
       onOpenChange(false);
-      // You would typically refresh the accounts list here.
+      router.refresh();
     } catch (error) {
       console.error("Failed to add account:", error);
       toast({
