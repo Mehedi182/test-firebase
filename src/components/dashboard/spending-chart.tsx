@@ -1,7 +1,9 @@
 "use client"
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { mockTransactions } from "@/lib/data";
+import { getTransactions } from "@/lib/api/transactions";
+import type { Transaction } from "@/lib/types";
 import { Pie, PieChart, Cell } from "recharts";
 
 const chartConfig: any = {
@@ -24,27 +26,45 @@ const chartConfig: any = {
       label: "Transport",
       color: "hsl(var(--chart-4))",
     },
+    Shopping: {
+        label: "Shopping",
+        color: "hsl(var(--chart-5))",
+    },
     Other: {
         label: "Other",
-        color: "hsl(var(--chart-5))",
+        color: "hsl(var(--chart-6))",
     }
 }
 
 export default function SpendingChart() {
-    const expenses = mockTransactions.filter(t => t.type === 'expense');
-    const spendingByCategory = expenses.reduce((acc, curr) => {
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+    useEffect(() => {
+        async function fetchTransactions() {
+            const data = await getTransactions();
+            console.log(data);
+            setTransactions(data);
+        }
+        fetchTransactions();
+    }, []);
+
+    const expenses = transactions.filter((t: any) => t.type === 'expense');
+    console.log(expenses);
+    
+    const spendingByCategory = expenses.reduce((acc: Record<string, number>, curr: any) => {
         if (!acc[curr.category]) {
             acc[curr.category] = 0;
         }
         acc[curr.category] += curr.amount;
         return acc;
-    }, {} as Record<string, number>);
+    }, {});
 
-    const chartData = Object.keys(spendingByCategory).map(category => ({
-        name: category,
-        value: spendingByCategory[category],
-        fill: chartConfig[category]?.color || chartConfig['Other'].color,
+    const chartData = Object.keys(spendingByCategory).map((category) => ({
+      name: category,
+      value: parseFloat(spendingByCategory[category]),
+      fill: chartConfig[category]?.color || chartConfig["Other"].color,
     }));
+    console.log(chartData);
 
     return (
         <Card>
