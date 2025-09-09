@@ -1,25 +1,91 @@
 "use client";
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
-import AddTransactionDialog from '@/components/add-transaction-dialog';
-import { useState } from 'react';
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { PlusCircle, PiggyBank } from "lucide-react";
+import AddTransactionDialog from "@/components/add-transaction-dialog";
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function AppHeader() {
-    const [dialogOpen, setDialogOpen] = useState(false);
-    return (
-        <>
-            <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-sm px-4 md:px-6">
-                <SidebarTrigger className="hidden md:flex" />
-                <div className="flex-1">
-                    <h1 className="text-xl font-semibold">PennyWise</h1>
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const pathname = usePathname();
+  const pageTitle = pathname.split("/").pop();
+  const formattedTitle = pageTitle
+    ? pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1)
+    : "Dashboard";
+
+  return (
+    <>
+      <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-sm px-4 md:px-6">
+        <div className="md:hidden">
+          <Link
+            href="/"
+            className="flex items-center gap-2"
+            aria-label="PennyWise Home"
+          >
+            <PiggyBank className="w-6 h-6 text-primary" />
+          </Link>
+        </div>
+        <div className="hidden md:flex items-center gap-4">
+          <SidebarTrigger />
+          <h1 className="text-xl font-semibold">
+            {formattedTitle === "" ? "Dashboard" : formattedTitle}
+          </h1>
+        </div>
+
+        <div className="flex items-center gap-4 ml-auto">
+          <Button onClick={() => setDialogOpen(true)}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Transaction
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="overflow-hidden rounded-full"
+              >
+                <Avatar>
+                  <AvatarImage
+                    src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
+                    alt="User avatar"
+                  />
+                  <AvatarFallback>JD</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">John Doe</p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    john.doe@example.com
+                  </p>
                 </div>
-                <Button onClick={() => setDialogOpen(true)}>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add Transaction
-                </Button>
-            </header>
-            <AddTransactionDialog open={dialogOpen} onOpenChange={setDialogOpen} />
-        </>
-    );
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/profile">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/auth/login">Logout</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </header>
+      <AddTransactionDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+    </>
+  );
 }
