@@ -62,7 +62,7 @@ export default async function RecentTransactions() {
                 <TableCell>
                   <div className="font-medium">{transaction.description}</div>
                   <div className="text-sm text-muted-foreground">
-                    {transaction.category}
+                    {transaction.category_name}
                   </div>
                 </TableCell>
                 <TableCell

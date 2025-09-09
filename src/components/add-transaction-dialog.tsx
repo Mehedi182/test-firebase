@@ -39,7 +39,11 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { addTransaction } from "@/lib/api/transactions";
+import { getCategories } from "@/lib/api/categories";
+import { getAccounts } from "@/lib/api/accounts";
 import { useRouter } from "next/navigation";
+import { mockCategories, mockAccounts } from "@/lib/data";
+import { useEffect, useState } from "react";
 
 const transactionFormSchema = z.object({
   description: z.string().min(1, "Description is required."),
@@ -47,19 +51,10 @@ const transactionFormSchema = z.object({
   type: z.enum(["income", "expense"]),
   date: z.date(),
   category: z.string().min(1, "Category is required."),
+  account: z.string().min(1, "Account is required."),
 });
 
 export type TransactionFormValues = z.infer<typeof transactionFormSchema>;
-
-const exampleCategories = [
-  "Groceries",
-  "Salary",
-  "Utilities",
-  "Entertainment",
-  "Transport",
-  "Shopping",
-  "Health",
-];
 
 export default function AddTransactionDialog({
   open,
@@ -79,8 +74,37 @@ export default function AddTransactionDialog({
       type: "expense",
       date: new Date(),
       category: "",
+      account: "",
     },
   });
+
+  const transactionType = form.watch("type");
+
+  useEffect(() => {
+    form.resetField("category", { defaultValue: "" });
+  }, [transactionType, form]);
+
+
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    getCategories().then((data) => {
+      console.log(data);
+      setCategories(data);
+    });
+  }, []);
+  const [accounts, setAccounts] = useState<any[]>([]);
+  
+  useEffect(() => {
+    getAccounts().then((data) => {
+      console.log(data);
+      setAccounts(data);
+    });
+  }, []);
+
+  const filteredCategories = categories.filter(
+    (c) => c.type === transactionType && c.is_active
+  );
 
   const onSubmit = async (data: TransactionFormValues) => {
     try {
@@ -164,6 +188,30 @@ export default function AddTransactionDialog({
                 )}
               />
             </div>
+            <FormField
+              control={form.control}
+              name="account"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select an account" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {accounts.map((account) => (
+                        <SelectItem key={account.id} value={String(account.id)}>
+                          {account.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -178,9 +226,9 @@ export default function AddTransactionDialog({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {exampleCategories.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
+                        {filteredCategories.map((cat) => (
+                          <SelectItem key={cat.id} value={String(cat.id)}>
+                            {cat.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

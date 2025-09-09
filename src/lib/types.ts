@@ -5,6 +5,7 @@ export type Transaction = {
   amount: number;
   type: 'income' | 'expense';
   category: string;
+  account?: string;
 };
 
 export type Budget = {
