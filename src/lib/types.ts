@@ -35,3 +35,11 @@ export type TotalBalance = {
   // income: float;
   // expenses: float;
 };
+
+export type Category = {
+  id: string;
+  name: string;
+  description?: string | null;
+  type: 'income' | 'expense' | 'other';
+  is_active: boolean;
+};

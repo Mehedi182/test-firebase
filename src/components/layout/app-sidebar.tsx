@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sidebar, SidebarContent, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import { LayoutDashboard, Wallet, PiggyBank, BarChart3, Receipt, Landmark } from 'lucide-react';
+import { LayoutDashboard, Wallet, PiggyBank, BarChart3, Receipt, Landmark, Tags } from 'lucide-react';
 import AppHeader from './app-header';
 
 export default function AppSidebar({ children }: { children: React.ReactNode }) {
@@ -9,6 +9,7 @@ export default function AppSidebar({ children }: { children: React.ReactNode }) 
         { href: '/', label: 'Dashboard', icon: LayoutDashboard },
         { href: '/transactions', label: 'Transactions', icon: Receipt },
         { href: '/accounts', label: 'Accounts', icon: Landmark },
+        { href: '/categories', label: 'Categories', icon: Tags },
         { href: '/budgets', label: 'Budgets', icon: Wallet },
         { href: '/goals', label: 'Goals', icon: PiggyBank },
         { href: '/reports', label: 'Reports', icon: BarChart3 },
