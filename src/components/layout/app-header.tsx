@@ -5,7 +5,7 @@ import { PlusCircle, PiggyBank } from "lucide-react";
 import AddTransactionDialog from "@/components/add-transaction-dialog";
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,14 +15,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { logout } from "@/lib/api/auth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AppHeader() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const { toast } = useToast();
   const pageTitle = pathname.split("/").pop();
   const formattedTitle = pageTitle
     ? pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1)
     : "Dashboard";
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logged Out",
+      description: "You have been successfully logged out.",
+    });
+    router.push("/login");
+  };
 
   return (
     <>
@@ -78,9 +91,7 @@ export default function AppHeader() {
                 <Link href="/profile">Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/auth/login">Logout</Link>
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
