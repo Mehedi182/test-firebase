@@ -3,10 +3,11 @@ import { columns } from "@/components/transactions/columns";
 import { getTransactions } from "@/lib/api/transactions";
 import AppSidebar from "@/components/layout/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { cookies } from "next/headers";
 
 export default async function TransactionsPage() {
-  const transactions = await getTransactions();
-
+  const token = cookies().get("access_token")?.value;
+  const transactions = await getTransactions(token);
   return (
     <SidebarProvider>
       <AppSidebar>
