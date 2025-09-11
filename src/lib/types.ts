@@ -11,8 +11,12 @@ export type Transaction = {
 export type Budget = {
   id: string;
   category: string;
+  month?: Date; // e.g., "2023-09"
   amount: number;
   spent: number;
+  remaining: number;
+  is_over_budget: boolean;
+
 };
 
 export type Goal = {

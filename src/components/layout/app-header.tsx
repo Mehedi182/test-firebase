@@ -3,6 +3,9 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, PiggyBank } from "lucide-react";
 import AddTransactionDialog from "@/components/add-transaction-dialog";
+import AddAccountDialog from "@/components/add-account-dialog";
+import AddCategoryDialog from "@/components/add-category-dialog";
+import AddBudgetDialog from "@/components/add-budget-dialog";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -19,7 +22,11 @@ import { logout } from "@/lib/api/auth";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AppHeader() {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [transactionDialogOpen, setTransactionDialogOpen] = useState(false);
+  const [accountDialogOpen, setAccountDialogOpen] = useState(false);
+  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
+  const [budgetDialogOpen, setBudgetDialogOpen] = useState(false);
+
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
@@ -35,6 +42,39 @@ export default function AppHeader() {
       description: "You have been successfully logged out.",
     });
     router.push("/login");
+  };
+
+  const renderAddButton = () => {
+    switch (pathname) {
+      case "/accounts":
+        return (
+          <Button onClick={() => setAccountDialogOpen(true)}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Account
+          </Button>
+        );
+      case "/categories":
+        return (
+          <Button onClick={() => setCategoryDialogOpen(true)}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Category
+          </Button>
+        );
+      case "/budgets":
+        return (
+          <Button onClick={() => setBudgetDialogOpen(true)}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Budget
+          </Button>
+        );
+      default:
+        return (
+          <Button onClick={() => setTransactionDialogOpen(true)}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Transaction
+          </Button>
+        );
+    }
   };
 
   return (
@@ -57,10 +97,7 @@ export default function AppHeader() {
         </div>
 
         <div className="flex items-center gap-4 ml-auto">
-          <Button onClick={() => setDialogOpen(true)}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Transaction
-          </Button>
+          {renderAddButton()}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -96,7 +133,22 @@ export default function AppHeader() {
           </DropdownMenu>
         </div>
       </header>
-      <AddTransactionDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <AddTransactionDialog
+        open={transactionDialogOpen}
+        onOpenChange={setTransactionDialogOpen}
+      />
+      <AddAccountDialog
+        open={accountDialogOpen}
+        onOpenChange={setAccountDialogOpen}
+      />
+      <AddCategoryDialog
+        open={categoryDialogOpen}
+        onOpenChange={setCategoryDialogOpen}
+      />
+      <AddBudgetDialog
+        open={budgetDialogOpen}
+        onOpenChange={setBudgetDialogOpen}
+      />
     </>
   );
 }

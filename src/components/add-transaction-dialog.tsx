@@ -42,7 +42,6 @@ import { addTransaction } from "@/lib/api/transactions";
 import { getCategories } from "@/lib/api/categories";
 import { getAccounts } from "@/lib/api/accounts";
 import { useRouter } from "next/navigation";
-import { mockCategories, mockAccounts } from "@/lib/data";
 import { useEffect, useState } from "react";
 
 const transactionFormSchema = z.object({
