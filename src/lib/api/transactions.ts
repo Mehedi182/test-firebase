@@ -1,6 +1,6 @@
 import type { Transaction } from "@/lib/types";
 import type { TransactionFormValues } from "@/components/add-transaction-dialog";
-import { get, post } from "./apiClient";
+import { get, post, put, del } from "./apiClient";
 
 export async function getTransactions(): Promise<Transaction[]> {
     try {
@@ -8,7 +8,7 @@ export async function getTransactions(): Promise<Transaction[]> {
         if (!data) {
             return []; // Handle null response from API client in case of server-side auth error
         }
-        return data.map((t: any) => ({...t, date: new Date(t.date)}));
+        return data.map((t: any) => ({ ...t, date: new Date(t.date) }));
     } catch (error) {
         console.error('Error fetching transactions:', error);
         // In case of error, return empty array to prevent page crash
@@ -31,4 +31,32 @@ export async function addTransaction(transaction: TransactionFormValues): Promis
         ...data,
         date: new Date(data.date),
     };
+}
+
+
+
+export async function updateTransaction(id: string, transaction: TransactionFormValues): Promise<Transaction | null> {
+    const data = await put<any>(`/transactions/${id}/`, {
+        ...transaction,
+        date: transaction.date.toISOString().split('T')[0],
+    });
+
+    if (!data) {
+        return null;
+    }
+
+    return {
+        ...data,
+        date: new Date(data.date),
+    };
+}
+
+export async function deleteTransaction(id: string): Promise<void> {
+    await del(`/transactions/${id}/`);
+}
+
+export async function deleteTransactions(ids: string[]): Promise<void> {
+    // Django REST Framework typically doesn't support bulk delete on a standard ViewSet via a single DELETE request.
+    // This often requires a custom action or iterating requests. We'll iterate for simplicity.
+    await Promise.all(ids.map(id => del(`/transactions/${id}/`)));
 }
