@@ -29,9 +29,6 @@ async function customFetch(endpoint: string, options: RequestOptions = {}): Prom
     if (!response.ok) {
         const errorData = await response.text();
         console.error('API Error:', errorData);
-        if (typeof window === 'undefined') {
-            return null;
-        }
         throw new Error(`API request failed with status ${response.status}: ${errorData}`);
     }
 
@@ -43,17 +40,37 @@ async function customFetch(endpoint: string, options: RequestOptions = {}): Prom
 }
 
 export async function get<T>(endpoint: string, options?: RequestOptions): Promise<T | null> {
-    return customFetch(endpoint, { ...options, method: 'GET' });
+    try {
+        return await customFetch(endpoint, { ...options, method: 'GET' });
+    } catch (error) {
+        console.error('GET request failed:', error);
+        throw error;
+    }
 }
 
 export async function post<T>(endpoint: string, body?: any, options?: RequestOptions): Promise<T | null> {
-    return customFetch(endpoint, { ...options, method: 'POST', body });
+    try {
+        return await customFetch(endpoint, { ...options, method: 'POST', body });
+    } catch (error) {
+        console.error('POST request failed:', error);
+        throw error;
+    }
 }
 
 export async function put<T>(endpoint: string, body?: any, options?: RequestOptions): Promise<T | null> {
-    return customFetch(endpoint, { ...options, method: 'PUT', body });
+    try {
+        return await customFetch(endpoint, { ...options, method: 'PUT', body });
+    } catch (error) {
+        console.error('PUT request failed:', error);
+        throw error;
+    }
 }
 
 export async function del<T>(endpoint: string, options?: RequestOptions): Promise<T | null> {
-    return customFetch(endpoint, { ...options, method: 'DELETE' });
+    try {
+        return await customFetch(endpoint, { ...options, method: 'DELETE' });
+    } catch (error) {
+        console.error('DELETE request failed:', error);
+        throw error;
+    }
 }

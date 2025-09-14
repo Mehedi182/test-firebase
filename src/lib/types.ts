@@ -5,18 +5,20 @@ export type Transaction = {
   amount: number;
   type: 'income' | 'expense';
   category: string;
-  account?: string;
+  category_name?: string;
+  account: string;
+  account_name?: string;
 };
 
 export type Budget = {
   id: string;
   category: string;
+  category_name?: string;
   month?: Date; // e.g., "2023-09"
   amount: number;
   spent: number;
   remaining: number;
   is_over_budget: boolean;
-
 };
 
 export type Goal = {
@@ -27,7 +29,6 @@ export type Goal = {
   targetDate: Date;
 };
 
-
 export type Account = {
   id: string;
   name: string;
@@ -36,7 +37,7 @@ export type Account = {
 };
 
 export type TotalBalance = {
-  total_balance: float;
+  total_balance: number;
   // income: float;
   // expenses: float;
 };
